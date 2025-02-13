@@ -11,8 +11,6 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-     /*  "https://fausti-oro.vercel.app",
-      "https://www.orofaustino.com", */
     ],
     credentials: true,
   })
