@@ -10,7 +10,7 @@ import emailRoutes from "./routes/email.routes.js";
 const app = express();
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173" , "https://jfr-front2.vercel.app"],
     credentials: true,
   })
 );
