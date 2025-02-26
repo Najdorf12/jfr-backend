@@ -16,9 +16,9 @@ export const sendEmail = async (req, res) => {
 
   try {
     await transporter.sendMail({
-      from: `"Faustino Oro"<${EMAIL_USER}>`,
-      to: "oro.faustino@gmail.com",
-      subject: `Mensaje de ${email} / FAUSTINO-APP /`,
+      from: `"JFR - Website"<${EMAIL_USER}>`,
+      to: "agustin.morro@gmail.com",
+      subject: `Mensaje de ${email}`,
       html: `
         <h1>Detalles del contacto:</h1>
         <p><strong>Email:</strong> ${email}</p>
