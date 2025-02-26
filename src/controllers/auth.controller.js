@@ -23,7 +23,7 @@ export const register = async (req, res) => {
 
     const token = await createAccessToken({ id: userSaved._id });
 
-    res.cookie("token", token,{
+    res.cookie("token", token, {
       sameSite: "none",
       secure: true,
       httpOnly: false,
@@ -40,7 +40,6 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
-/*   const TOKEN_SECRET = `${process.env.TOKEN_SECRET}`; */
   try {
     const userFound = await User.findOne({ email });
     if (!userFound) return res.status(400).json(["Invalid credentials"]);
@@ -77,7 +76,7 @@ export const logout = (req, res) => {
 };
 export const verifyToken = async (req, res) => {
   const { token } = req.cookies;
-/*   console.log(token) */
+  /*   console.log(token) */
   const TOKEN_SECRET = `${process.env.TOKEN_SECRET}`;
   try {
     jwt.verify(token, TOKEN_SECRET, async (error, user) => {
