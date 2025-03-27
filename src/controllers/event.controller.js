@@ -1,4 +1,5 @@
 import Event from "../models/event.model.js";
+import { deleteImage } from "../libs/cloudinary.js";
 
 export const getEvents = async (req, res) => {
   try {
@@ -38,6 +39,18 @@ export const deleteEvent = async (req, res) => {
     if (!event) {
       return res.status(404).json({ message: error.message });
     }
+    if (event.images.length > 0) {
+      for (const img of event.images) {
+        try {
+          await deleteImage(img.public_id); // Delete each image one by one
+          console.log(`Deleted image with id: ${img.public_id}`);
+        } catch (error) {
+          console.error(
+            `Failed to delete image ${img.public_id}: ${error.message}`
+          );
+        }
+      }
+    }
     res.json(event);
   } catch (error) {
     console.error(error);
@@ -71,5 +84,22 @@ export const updateEvent = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });
+  }
+};
+
+export const deleteOneImage = async (req, res) => {
+  try {
+    const { img: public_id } = req.params;
+
+    if (!public_id) {
+      return res.status(400).json({ message: "Falta el public_id de la imagen" });
+    }
+
+    await deleteImage(public_id);
+
+    return res.status(200).json({ message: "Imagen eliminada correctamente" });
+  } catch (error) {
+    console.error("Error al procesar la eliminación de la imagen:", error);
+    return res.status(500).json({ message: "Error al eliminar la imagen" });
   }
 };
