@@ -88,14 +88,21 @@ export const updateEvent = async (req, res) => {
 };
 
 export const deleteOneImage = async (req, res) => {
-  try {
-    const { img: public_id } = req.params;
+  const { img: public_id } = req.params;
 
+  try {
     if (!public_id) {
-      return res.status(400).json({ message: "Falta el public_id de la imagen" });
+      return res
+        .status(400)
+        .json({ message: "Falta el public_id de la imagen" });
     }
 
     await deleteImage(public_id);
+
+    await Event.updateMany(
+      { "images.public_id": public_id },
+      { $pull: { images: { public_id: public_id } } }
+    );
 
     return res.status(200).json({ message: "Imagen eliminada correctamente" });
   } catch (error) {
