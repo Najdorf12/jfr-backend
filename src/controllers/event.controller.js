@@ -34,27 +34,39 @@ export const createEvent = async (req, res) => {
 
 export const deleteEvent = async (req, res) => {
   try {
-    const event = await Event.findByIdAndDelete(req.params.id);
-
+    const event = await Event.findById(req.params.id);
+    
     if (!event) {
-      return res.status(404).json({ message: error.message });
+      return res.status(404).json({ message: "Evento no encontrado" });
     }
-    if (event.images.length > 0) {
-      for (const img of event.images) {
-        try {
-          await deleteImage(img.public_id); // Delete each image one by one
-          console.log(`Deleted image with id: ${img.public_id}`);
-        } catch (error) {
-          console.error(
-            `Failed to delete image ${img.public_id}: ${error.message}`
-          );
-        }
-      }
-    }
-    res.json(event);
+
+    // Eliminar imágenes de Cloudinary en paralelo
+    const deletePromises = event.images.map(img => 
+      deleteImage(img.public_id)
+        .then(() => console.log(`Imagen ${img.public_id} eliminada`))
+        .catch(error => {
+          console.error(`Error eliminando imagen ${img.public_id}:`, error);
+          // Continuar aunque falle una imagen
+        })
+    );
+
+    // Esperar que todas las eliminaciones terminen (éxito o error)
+    await Promise.all(deletePromises);
+
+    // Eliminar el evento de MongoDB
+    const deletedEvent = await Event.findByIdAndDelete(req.params.id);
+    
+    res.json({
+      message: "Evento e imágenes eliminados",
+      event: deletedEvent
+    });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.error("Error en deleteEvent:", error);
+    res.status(500).json({ 
+      message: "Error al eliminar el evento",
+      error: error.message 
+    });
   }
 };
 
