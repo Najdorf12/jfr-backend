@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 
 const EMAIL_USER = "agustin.morro@gmail.com";
-const EMAIL_PASS = "aptb fjnd oqgs hxsy";
+const EMAIL_PASS = "jlcj sazu cdvt zevo";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -17,7 +17,7 @@ export const sendEmail = async (req, res) => {
   try {
     await transporter.sendMail({
       from: `"JFR - Website"<${EMAIL_USER}>`,
-      to: "jfrpromo@gmail.com",
+      to: "agustin.morro@gmail.com", // to: "jfrpromo@gmail.com",
       subject: `Mensaje de ${email}`,
       html: `
         <h1>Detalles del contacto:</h1>
